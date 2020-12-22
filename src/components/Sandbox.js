@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import CodeEditor from './CodeEditor';
 
 const initialUserData = {
-    username: 'Claire',
-    email: 'cer4477@gmail.com',
+    username: 'testUser',
+    email: 'email@gmail.com',
     password: 'password', 
     files: []
 }
@@ -16,7 +16,7 @@ export default function Sandbox() {
             files: [...user.files, newFileObj]
         })
     }
-    
+
     const logOutUser = () => {
         window.localStorage.setItem([user.username], JSON.stringify(user));
         setUser(initialUserData);
