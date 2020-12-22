@@ -1,11 +1,11 @@
-import logo from './logo.svg';
+import {Route} from 'react-router-dom';
 import './App.css';
 import Sandbox from './components/Sandbox';
 
 function App() {
   return (
     <div className="App">
-      <Sandbox />
+      <Route path='/' component={Sandbox} />
     </div>
   );
 }

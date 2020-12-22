@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import { Controlled as CodeMirror } from "react-codemirror2";
+import logo from '../girl.png';
+import downloadIcon from '../downloadIcon.png';
+import openIcon from '../open.png';
+import generate from 'project-name-generator';
 
 import "../App.css";
 import "codemirror/lib/codemirror.css";
@@ -10,14 +14,77 @@ import "codemirror/mode/css/css";
 import "codemirror/mode/javascript/javascript";
 
 class CodeEditor extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      id: "",
+      user: props.user,
+      filename: "",
       html: "",
       css: "",
-      js: ""
+      js: "",
+      selectedFile: ""
     };
+  }
+
+  handleChange = (e) => {
+      this.setState({
+          ...this.state,
+          filename: e.target.value
+      })
+  }
+  selectFile = (e) => {
+      this.setState({
+          ...this.state,
+          selectedFile: e.target.value
+      })
+  }
+
+  displayFile = (e) => {
+    e.preventDefault();
+    console.log("open files", this.props.files)
+    const fileToRetrieve = this.state.selectedFile;
+    console.log(fileToRetrieve);
+    const openFile = this.props.files.filter(file => file.filename === fileToRetrieve)[0];
+    this.setState({
+        ...this.state,
+        filename: openFile.filename,
+        html: openFile.html,
+        css: openFile.css,
+        js: openFile.js,
+        selectedFile: ''
+    })
+    console.log(openFile);
+  }
+
+  addFile = (e) => {
+      e.preventDefault();
+      let newFileObj = {}
+      if (this.state.filename === ''){
+        const randomName = generate().dashed; 
+        this.setState({
+            ...this.state,
+            filename: randomName
+        })       
+        newFileObj = {
+            filename: randomName,
+            html: this.state.html,
+            css: this.state.css,
+            js: this.state.js
+        }
+      }else{
+        newFileObj = {
+            filename: this.state.filename,
+            html: this.state.html,
+            css: this.state.css,
+            js: this.state.js
+        }
+      }
+      this.props.saveFile(newFileObj)   
+  }
+
+  handleLogOut = (e) => {
+      e.preventDefault();
+      this.props.logOutUser();
   }
 
   componentDidUpdate() {
@@ -68,6 +135,39 @@ class CodeEditor extends Component {
     };
 
     return (
+    <div className='code-editor-page'>
+        <div className='header-wrapper'>
+            <nav>
+                <div className='title-wrapper'>
+                    <div className='logo-div'>
+                        <img className='logo' src={logo} alt='logo' />
+                        <h1>Code Friends</h1>
+                    </div>
+                    <div className='user-div'>
+                        <h2>{`${this.props.user}'s Sandbox`}</h2>
+                    </div>
+                </div>
+                <div className='button-div'>
+                    <input type='text'
+                        name='filename'
+                        placeholder='...name your project'
+                        value={this.state.filename}
+                        onChange={this.handleChange}
+                        />
+                    <button onClick={this.addFile} className='header-button'><img className='icon-img' src={downloadIcon} alt='play-icon'/></button>
+                    <select name='selectFile' value={this.state.selectedFile} onChange={this.selectFile}>
+                        <option value=''>Select a file</option>
+                        {
+                            this.props.files.map(file => (
+                                <option key={file.filename} value={file.filename}>{file.filename}</option>
+                            ))
+                        }
+                    </select>
+                    <button onClick={this.displayFile} className='header-button'><img className='icon-img' src={openIcon} alt='open-icon'/></button>
+                    <button onClick={this.handleLogOut} className='header-button account'>Log Out</button>
+                </div>
+            </nav>
+        </div>
       <div className="code-editor-wrapper">
         <section className="playground">
           <div className="code-editor html-code">
@@ -113,6 +213,7 @@ class CodeEditor extends Component {
         <section className="result">
           <iframe title="result" className="iframe" ref="iframe" />
         </section>
+      </div>
       </div>
     );
   }
