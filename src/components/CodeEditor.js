@@ -44,16 +44,19 @@ class CodeEditor extends Component {
     console.log("open files", this.props.files)
     const fileToRetrieve = this.state.selectedFile;
     console.log(fileToRetrieve);
-    const openFile = this.props.files.filter(file => file.filename === fileToRetrieve)[0];
-    this.setState({
-        ...this.state,
-        filename: openFile.filename,
-        html: openFile.html,
-        css: openFile.css,
-        js: openFile.js,
-        selectedFile: ''
-    })
-    console.log(openFile);
+    if (this.props.files.length > 0){
+        const openFile = this.props.files.filter(file => file.filename === fileToRetrieve)[0];
+        this.setState({
+            ...this.state,
+            filename: openFile.filename,
+            html: openFile.html,
+            css: openFile.css,
+            js: openFile.js,
+            selectedFile: ''
+        })
+        console.log(openFile);
+    }
+    
   }
 
   addFile = (e) => {
@@ -85,6 +88,14 @@ class CodeEditor extends Component {
   handleLogOut = (e) => {
       e.preventDefault();
       this.props.logOutUser();
+      this.setState({
+        user: '',
+        filename: "",
+        html: "",
+        css: "",
+        js: "",
+        selectedFile: ""
+      });
   }
 
   componentDidUpdate() {
@@ -126,6 +137,7 @@ class CodeEditor extends Component {
   };
 
   render() {
+    console.log(this.props.files)
     const { html, js, css } = this.state;
     const codeMirrorOptions = {
       theme: 'material',

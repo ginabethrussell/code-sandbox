@@ -1,15 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import CodeEditor from './CodeEditor';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const initialUserData = {
-    username: 'testUser',
-    email: 'email@gmail.com',
-    password: 'password', 
+    username: '',
+    email: '',
+    password: '', 
     files: []
 }
 export default function Sandbox() {
-    const [user, setUser] = useState(initialUserData);
+    const [user, setUser] = useLocalStorage(initialUserData);
 
+    useEffect(()=> {
+        console.log(user)
+    }, [])
+    console.log(user);
     const saveFile = (newFileObj) => {
         setUser({
             ...user, 
